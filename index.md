@@ -19,9 +19,7 @@ The first rule seems obvious. Your code must pass all tests to verify that your 
 
 Using [Conway’s Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) as the backdrop, Haines asks the reader to consider the difference between testing state and testing behavior. When testing state, we perform an operation and afterwards check if a state change has occurred. Behavior driven testing, however, asks us to center our tests around the behaviors that we expect from our system. It builds only what is absolutely necessary for our system to work and only at the time that it’s required, keeping our codebase as streamlined as possible. 
 
-```
-Because I have very limited experience with writing test driven code, the distinction between state and behavior driven testing is something I had not considered before, and I feel that I need to do more research regarding the advantages and disadvantages of these types of testing. I wish Haines’ book had gone a little more in-depth in its discussion of this topic.
-```
+>Because I have very limited experience with writing test driven code, the distinction between state and behavior driven testing is something I had not considered before, and I feel that I need to do more research regarding the advantages and disadvantages of these types of testing. I wish Haines’ book had gone a little more in-depth in its discussion of this topic.
 
 **Expressed Intent**
 
@@ -35,7 +33,7 @@ The organization of the code itself is another important facet to writing simple
 
 The idea behind the ‘No Duplication’ rule is the same idea that drives the DRY (Don’t Repeat Yourself) principle: “Every piece of knowledge should have one and only one representation.” Your code should have no duplicate knowledge. It sounds simple enough but Haines reminds us that we are not talking about the code itself but the information held within the code. So, when refactoring code to employ the “No Duplication” rule we must consider more than whether two lines of code are literally the same or not. Haines writes, “A good way to detect knowledge duplication is to ask what happens if we want to change something.” Will multiple places within our codebase require that change, and will these separate representations of information fall out of step with another when the codebase changes? If either answer is yes, then we are looking at knowledge duplication. 
 
->To me, this was the most interesting section of Haines’ book as it brought into further relief my superficial understanding of the DRY principle. In my >implementations of DRY, I’ve always looked for code duplication without giving any real consideration to what the code was doing. This actually came up during one >of my interviews for this role. I was given a codebase that I had to refactor into cleaner code. I employed a naive version of “DRY” and immediately broke the code >because I’d abstracted something that needed to be there to maintain the method’s functionality. 
+>To me, this was the most interesting section of Haines’ book as it brought into further relief my superficial understanding of the DRY principle. In my implementations of DRY, I’ve always looked for code duplication without giving any real consideration to what the code was doing. This actually came up during one of my interviews for this role. I was given a codebase that I had to refactor into cleaner code. I employed a naive version of “DRY” and immediately broke the code because I’d abstracted something that needed to be there to maintain the method’s functionality. 
 
 **Small**
 
@@ -43,4 +41,4 @@ The “Small” rule dictates that our code should rid itself of anything that d
 
 ***
 
-Overall, I found this to be an enlightening and instructive read. I am looking forward to putting the “Tests pass” and “No Duplication” rules into practice so as to gain a more nuanced understanding of how they work and interact with each other in a practical setting. 
+>Overall, I found this to be an enlightening and instructive read. I am looking forward to putting the “Tests pass” and “No Duplication” rules into practice so as to gain a more nuanced understanding of how they work and interact with each other in a practical setting. 
