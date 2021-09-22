@@ -17,7 +17,7 @@ Simple code is flexible at its core, and we create simple code by applying the f
 
 The first rule seems obvious. Your code must pass all tests to verify that your system works. But by what metrics are we writing these tests?
 
-Using Conway’s Game of Life as the backdrop, Haines asks the reader to consider the difference between testing state and testing behavior. When testing state, we perform an operation and afterwards check if a state change has occurred. Behavior driven testing, however, asks us to center our tests around the behaviors that we expect from our system. It builds only what is absolutely necessary for our system to work and only at the time that it’s required, keeping our codebase as streamlined as possible. 
+Using [Conway’s Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) as the backdrop, Haines asks the reader to consider the difference between testing state and testing behavior. When testing state, we perform an operation and afterwards check if a state change has occurred. Behavior driven testing, however, asks us to center our tests around the behaviors that we expect from our system. It builds only what is absolutely necessary for our system to work and only at the time that it’s required, keeping our codebase as streamlined as possible. 
 
 
 Because I have very limited experience with writing test driven code, the distinction between state and behavior driven testing is something I had not considered before, and I feel that I need to do more research regarding the advantages and disadvantages of these types of testing. I wish Haines’ book had gone a little more in-depth in its discussion of this topic.
