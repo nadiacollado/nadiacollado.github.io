@@ -9,7 +9,7 @@ A foundational idea that he tries to get across immediately is that when talking
 Simple code is flexible at its core, and we create simple code by applying the four rules of simple design as principles. The rules, listed in order of priority, are as follows:
 
 1. Tests Pass
-2. Expressed Intent
+2. Expresses Intent
 3. No Duplication (DRY)
 4. Small
 
@@ -21,9 +21,9 @@ Using [Conway’s Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of
 
 >Because I have very limited experience with writing test driven code, the distinction between state and behavior driven testing is something I had not considered before, and I feel that I need to do more research regarding the advantages and disadvantages of these types of testing. I wish Haines’ book had gone a little more in-depth in its discussion of this topic.
 
-**Expressed Intent**
+**Expresses Intent**
 
-Expressed intent refers to the code’s readability. Is it easy to understand? How do we improve its readability?
+Expresses intent refers to the code’s readability. Is it easy to understand? How do we improve its readability?
 
 Haines writes that “one of the most important qualities of a codebase, when it comes time to change, is how quickly you can find the part that should be changed.” A quick identification can only occur if our code expresses its intent--what it fundamentally does--wherever required. Therefore the name of a test, or a method, should always be reflective of the thing itself.
 
