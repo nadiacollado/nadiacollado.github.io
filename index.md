@@ -1,8 +1,8 @@
-## On "Understanding The Four Rules of Simple Design"
+## On _Understanding The Four Rules of Simple Design_
 
 **"Striving for a simple design — one that is adaptable to changing needs — is the key to a “better design.”**
 
-Corey Haines’ “Understanding The Four Rules of Simple Design” is a succinctly written exploration of Kent Beck’s four rules for writing simple code. In a series of essays and examples, Haines discusses different ways to think about developing code within the context of Beck’s rules. 
+Corey Haines’ _Understanding The Four Rules of Simple Design_ is a succinctly written exploration of Kent Beck’s four rules for writing simple code. In a series of essays and examples, Haines discusses different ways to think about developing code within the context of Beck’s rules. 
 
 A foundational idea that he tries to get across immediately is that when talking about simple code and good design, we are talking about code that is adaptable. “The one constant that we know for sure in software development is that things are going to change,” Haines writes, “and these changes to the system require changes to the underlying codebase. If we don’t pay attention, our code rots.”
 
@@ -39,6 +39,6 @@ To me, this was the most interesting section of Haines’ book as it brought int
 **Small**
 
 The “Small” rule dictates that our code should rid itself of anything that does not serve the first three rules. The code must have no superfluous parts. Haines recommends going over the final product to make sure that every bit of code is being used and that there aren’t any leftover duplicates. 
-__________________________________________________________________________________________________________________________________
+____________________________________________________________________________________________________________________________________________________________________
 
 Overall, I found this to be an enlightening and instructive read. I am looking forward to putting the “Tests pass” and “No Duplication” rules into practice so as to gain a more nuanced understanding of how they work and interact with each other in a practical setting. 
