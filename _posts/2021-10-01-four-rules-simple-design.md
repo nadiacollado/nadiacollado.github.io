@@ -1,4 +1,12 @@
-## On _Understanding The Four Rules of Simple Design_
+---
+layout: post
+title:  "Four Rules of Simple Design"
+date:   2021-10-01 15:11:41 -0400
+categories: blog
+---
+
+
+### On _Understanding The Four Rules of Simple Design_
 
 **"Striving for a simple design — one that is adaptable to changing needs — is the key to a “better design.”**
 
