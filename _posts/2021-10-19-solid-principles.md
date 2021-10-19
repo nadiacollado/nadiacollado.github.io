@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "On Understanding SOLID's Single Responsibility and Open-Closed Principles"
-date:   2021-19-01 15:11:41 -0400
+date:   2021-19-01 14:57:41 -0400
 categories: blog
 ---
 
