@@ -29,7 +29,7 @@ class Board
     
     def initialize(squares = %w[1 2 3 4 5 6 7 8 9], player_num, player_symbol)
         @squares = squares
-	    @player_num = player_num
+        @player_num = player_num
         @player_symbol = player_symbol
     end
     
