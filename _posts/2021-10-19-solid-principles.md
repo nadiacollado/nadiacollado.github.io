@@ -9,19 +9,19 @@ First introduced by Robert C. Martin in the early 2000s, the [SOLID principles](
 
 SOLID is a mnemonic acronym that stands for: 
 
-S - Single-responsiblity Principle
-O - Open-closed Principle
-L - Liskov Substitution Principle
-I - Interface Segregation Principle
-D - Dependency Inversion Principle
+- S - Single-responsiblity Principle
+- O - Open-closed Principle
+- L - Liskov Substitution Principle
+- I - Interface Segregation Principle
+- D - Dependency Inversion Principle
 
 In this article, we will examine the Single Responsibility and Open-Closed principles through a series of examples from a game of Tic-Tac-Toe built in Ruby. 
 
 **Single Responsibility Principle**
 
-The first of the 5 SOLID principles, the Single Responsibility principle states that a class should only have one reason to change. This is achieved by only having a single responsibility, or a singular job to do. 
+The first of the five SOLID principles, the Single Responsibility principle states that a class should only have one reason to change. This is achieved by only having a single responsibility, or a singular job to do. 
 
-This principle serves two purposes. A class with a single responsibility is far easier to understand and implement than a class with multiple responsibilities. It is also far easier to change and will largely prevent the unexpected side-effects that are common with classes that encapsulate lots of functionality and dependencies. Take the following Board class from a game of Tic-Tac-Toe as an example. 
+This principle serves two purposes. A class with a single responsibility is far easier to understand and implement than a class with multiple responsibilities. It is also far easier to change and will largely prevent the unexpected side-effects that are common with classes that encapsulate lots of functionality and dependencies. Take the following **Board** class from a game of Tic-Tac-Toe as an example. 
 
 ```
 class Board
@@ -34,25 +34,25 @@ class Board
     end
     
     def display_board
-       puts "\n #{squares[0]} | #{squares[1]} | #{squares[2]} "
-       puts "-----------"
-       puts " #{squares[3]} | #{squares[4]} | #{squares[5]} "
-       puts "-----------"
-       puts " #{squares[6]} | #{squares[7]} | #{squares[8]}
-       \n"
+        puts "\n #{squares[0]} | #{squares[1]} | #{squares[2]} "
+        puts "-----------"
+        puts " #{squares[3]} | #{squares[4]} | #{squares[5]} "
+        puts "-----------"
+        puts " #{squares[6]} | #{squares[7]} | #{squares[8]}
+        \n"
     end
 
     def make_move
-       puts "Player #{player_symbol}, you're up!\n"
-       user_input = gets.chomp
+        puts "Player #{player_symbol}, you're up!\n"
+        user_input = gets.chomp
     end
 
     def valid_move?(move, symbol)
-       if within_range?(move) && !square_taken?(move)
-		    mark_square(move, symbol)
-       else
-           false
-       end
+        if within_range?(move) && !square_taken?(move)
+            mark_square(move, symbol)
+        else
+            false
+        end
     end
 
     def within_range?(move)
@@ -62,7 +62,7 @@ class Board
 
     def square_taken?(move)
         move = move.to_i
-        squares[move - 1] == "X" || squares[move - 1] == "O
+        squares[move - 1] == "X" || squares[move - 1] == "O"
     end
 
     def mark_square(move, player)
@@ -75,7 +75,7 @@ class Board
     end
     
     def turn_count
-       squares.count("X") + squares.count("O")
+        squares.count("X") + squares.count("O")
     end
 end
 ```
@@ -86,7 +86,7 @@ The **Board** class above initializes a new board for the game by creating the `
 require 'player'
 
 class Board
-    attr_reader : squares
+    attr_reader :squares, :player
     
     def initialize(squares = %w[1 2 3 4 5 6 7 8 9])
         @squares = squares
@@ -94,25 +94,25 @@ class Board
     end
     
     def display_board
-       puts "\n #{squares[0]} | #{squares[1]} | #{squares[2]} "
-       puts "-----------"
-       puts " #{squares[3]} | #{squares[4]} | #{squares[5]} "
-       puts "-----------"
-       puts " #{squares[6]} | #{squares[7]} | #{squares[8]}
-       \n"
+        puts "\n #{squares[0]} | #{squares[1]} | #{squares[2]} "
+        puts "-----------"
+        puts " #{squares[3]} | #{squares[4]} | #{squares[5]} "
+        puts "-----------"
+        puts " #{squares[6]} | #{squares[7]} | #{squares[8]}
+        \n"
     end
 
     def make_move
-       puts "Player #{player_symbol}, you're up!\n"
-       user_input = gets.chomp
+        puts "Player #{player_symbol}, you're up!\n"
+        user_input = gets.chomp
     end
 
     def valid_move?(move, symbol)
-       if within_range?(move) && !square_taken?(move)
+        if within_range?(move) && !square_taken?(move)
             mark_square(move, player.symbol)
-       else
+        else
             false
-       end
+        end
     end
 
     def within_range?(move)
@@ -122,7 +122,7 @@ class Board
 
     def square_taken?(move)
         move = move.to_i
-        squares[move - 1] == "X" || squares[move - 1] == "O
+        squares[move - 1] == "X" || squares[move - 1] == "O"
     end
 
     def mark_square(move, player)
@@ -135,7 +135,7 @@ class Board
     end
     
     def turn_count
-       squares.count("X") + squares.count("O")
+        squares.count("X") + squares.count("O")
     end
 end
 ```
@@ -172,11 +172,11 @@ The idea of single responsibility can be usefully employed in other parts of you
 
 ```
     def valid_move?(move, symbol)
-       if within_range?(move) && !square_taken?(move)
+        if within_range?(move) && !square_taken?(move)
             mark_square(move, player.symbol)
-       else
+        else
             false
-       end
+        end
     end
 
     def within_range?(move)
@@ -186,7 +186,7 @@ The idea of single responsibility can be usefully employed in other parts of you
 
     def square_taken?(move)
         move = move.to_i
-        squares[move - 1] == "X" || squares[move - 1] == "O
+        squares[move - 1] == "X" || squares[move - 1] == "O"
     end
 
     def mark_square(move, player)
@@ -204,12 +204,12 @@ All three of the above methods are taking on more than their given responsibilit
 
     def valid_move?(move, symbol)
         move = convert_to_integer(move)
-
+    
         if within_range?(move) && !square_taken?(move)
             mark_square(move, player.symbol)
         else
             false
-       end
+        end
     end
 
     def within_range?(move)
