@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "On Understanding SOLID's Single Responsibility and Open-Closed Principles"
+title:  "On SOLID's Single Responsibility and Open-Closed Principles"
 date:   2021-10-19 14:57:41 -0400
 categories: blog
 ---
@@ -9,13 +9,13 @@ First introduced by Robert C. Martin in the early 2000s, the [SOLID principles](
 
 SOLID is a mnemonic acronym that stands for: 
 
-- S - Single-responsiblity Principle
-- O - Open-closed Principle
+- S - Single-Responsiblity Principle
+- O - Open-Closed Principle
 - L - Liskov Substitution Principle
 - I - Interface Segregation Principle
 - D - Dependency Inversion Principle
 
-In this article, we will examine the Single Responsibility and Open-Closed principles through a series of examples from a game of Tic-Tac-Toe built in Ruby. 
+In this article, we will examine the Single Responsibility and Open-Closed principles.
 
 **Single Responsibility Principle**
 
@@ -69,14 +69,6 @@ class Board
         move = move.to_i
         squares[move - 1] = player
     end
-    
-    def board_full?
-        squares.all? {|square| square == "X" || square == "O"}
-    end
-    
-    def turn_count
-        squares.count("X") + squares.count("O")
-    end
 end
 ```
 
@@ -128,14 +120,6 @@ class Board
     def mark_square(move, player)
         move = move.to_i
         squares[move - 1] = player
-    end
-    
-    def board_full?
-        squares.all? {|square| square == "X" || square == "O"}
-    end
-    
-    def turn_count
-        squares.count("X") + squares.count("O")
     end
 end
 ```
