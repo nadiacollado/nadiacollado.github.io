@@ -9,13 +9,13 @@ First introduced by Robert C. Martin in the early 2000s, the [SOLID principles](
 
 SOLID is a mnemonic acronym that stands for: 
 
-- S - Single-Responsiblity Principle
-- O - Open-Closed Principle
+- S - Single Responsiblity Principle
+- O - Open/Closed Principle
 - L - Liskov Substitution Principle
 - I - Interface Segregation Principle
 - D - Dependency Inversion Principle
 
-In this article, we will examine the Single Responsibility and Open-Closed principles.
+In this article, we will examine the Single Responsibility and Open/Closed principles.
 
 **Single Responsibility Principle**
 
@@ -27,10 +27,11 @@ This principle serves two purposes. A class with a single responsibility is far 
 class Board
     attr_reader : squares, :player_num, :player_symbol
     
-    def initialize(squares = %w[1 2 3 4 5 6 7 8 9], player_num, player_symbol)
+    def initialize(squares = %w[1 2 3 4 5 6 7 8 9], player_1 = "X", player_2 = "O")
         @squares = squares
-        @player_num = player_num
-        @player_symbol = player_symbol
+        @player_1 = player_1
+        @player_2 = player_2
+        @current_player = player_1
     end
     
     def display_board
@@ -42,8 +43,12 @@ class Board
         \n"
     end
 
+    def current_player
+        turn_count.odd? ? player_2 : player_1
+    end
+
     def make_move
-        puts "Player #{player_symbol}, you're up!\n"
+        puts "Player #{current_player}, you're up!\n"
         user_input = gets.chomp
     end
 
@@ -69,6 +74,10 @@ class Board
         move = move.to_i
         squares[move - 1] = player
     end
+    
+    def turn_count
+        squares.count("X") + squares.count("O")
+    end
 end
 ```
 
@@ -78,11 +87,12 @@ The **Board** class above initializes a new board for the game by creating the `
 require 'player'
 
 class Board
-    attr_reader :squares, :player
+    attr_reader :squares, :player1, :player2
     
     def initialize(squares = %w[1 2 3 4 5 6 7 8 9])
         @squares = squares
-        @player = Player.new(1, “X”)
+        @player1 = Player.new(1, “X”)
+        @player2 = Player.new(2, “O”)
     end
     
     def display_board
@@ -94,9 +104,14 @@ class Board
         \n"
     end
 
+    def current_player
+        turn_count.odd? ? player_2 : player_1
+    end
+
     def make_move
-        puts "Player #{player_symbol}, you're up!\n"
+        puts "Player #{current_player}, you're up!\n"
         user_input = gets.chomp
+        valid_move?(user_input, current_player)
     end
 
     def valid_move?(move, symbol)
@@ -152,6 +167,28 @@ class Player
     end
 end
 ```
+
+```
+class Board
+    ...
+    
+    def turn
+        player_move = current_player.make_move
+        valid_move?(player_move, current_player.player_symbol)
+    end
+
+    def valid_move?(move, symbol)
+        if within_range?(move) && !square_taken?(move)
+            mark_square(move, player.symbol)
+        else
+            false
+        end
+    end
+    
+    ...
+end
+```
+
 The idea of single responsibility can be usefully employed in other parts of your code. Methods, like classes, should also have a single responsibility.  Let’s take a look at some of the methods from our  Tic-Tac-Toe **Board** class. 
 
 ```
@@ -211,3 +248,36 @@ All three of the above methods are taking on more than their given responsibilit
 ***
 
 **Open-Closed Principle**
+
+The Open/Closed principle states that software entities such as classes, modules, functions, etc. should be open for extension, but closed for modification. This means that any new functionality should be implemented by adding new classes, attributes, and methods instead of changing existing ones.
+
+As you can probably tell, the Open/Closed principle is highly related to the Single Responsibility principle as it maintains that classes should not take on additional functionality (read: responsibilities) that could be handled by a different class. At its root, the Open/Closed principle is saying that instead of changing code, we need to write new code, and that new code is going to work with our old code to provide the functionality that we need. 
+
+Let’s take a look at our game of Tic-Tac-Toe. For now, we’ve only implemented functionality for a human v human game, but what if we wanted to add a Computer player? If we added the computer player to our **Player** class, we’d have to make various modifications to our **Player** class, specifically our `make_move` would have to change as a computer player would need to be programmed to choose a valid square on the board. 
+
+```
+class Player
+
+    attr_accessor :player_type, :symbol
+    
+    def initialize(player_type, symbol)
+        @player_type = player_type
+        @symbol = symbol
+    end
+    
+    def get_move(board)
+        puts "Player #{symbol}, you're up!\n"
+        move = nil
+        if player_type == computer
+            computer_input = rand (1...9)
+            Until board.valid_move?(computer_input)
+                move = computer_input
+        else
+            move = gets.chomp
+        end
+        move
+   end
+end
+```
+
+The above changes to the **Player** class would qualify as a full violation of the Open/Closed principle. 
