@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "On SOLID's Single Responsibility and Open-Closed Principles"
+title:  "On SOLID's Single Responsibility and Open/Closed Principles"
 date:   2021-10-19 14:57:41 -0400
 categories: blog
 ---
@@ -237,7 +237,6 @@ All three of the above methods are taking on more than their given responsibilit
         squares[move - 1] = player
     end
 ```
-***
 
 **Open/Closed Principle**
 
