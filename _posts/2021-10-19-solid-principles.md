@@ -25,7 +25,7 @@ This principle serves two purposes. A class with a single responsibility is far 
 
 ```
 class Board
-    attr_reader : squares, :player_num, :player_symbol
+    attr_reader : squares, :player_1, :player_2
     
     def initialize(squares = %w[1 2 3 4 5 6 7 8 9], player_1 = "X", player_2 = "O")
         @squares = squares
@@ -81,18 +81,18 @@ class Board
 end
 ```
 
-The **Board** class above initializes a new board for the game by creating the `squares` array. It holds methods that are either directly affected by or have an effect on `squares`, such as `display_board` and `mark_square`. But it also initializes a player through `player_num` and `player_symbol`. On first glance, this might not seem like a bad idea. Our `make_move` method needs player information to prompt the next player to make their move. But what if we wanted to create a player for a different game - let’s call it Zic-Zac-Zoe - that had a different board set up? We wouldn’t be able to use our existing player code because it’s embedded within the Tic-Tac-Toe **Board** class so we’d have to repeat all applicable player code within Zic-Zac-Zoe. If, instead, we had an independent **Player** class, we could simply create instances of that class wherever they were needed.
+The **Board** class above initializes a new board for the game by creating the `squares` array. It holds methods that are either directly affected by or have an effect on `squares`, such as `display_board` and `mark_square`. But it also initializes players through `player_1` and `player_s2`. At first glance, this might not seem like a bad idea. Our `make_move` method needs the player's information to prompt the next player to make their move. But what if we wanted to create a player for a different game - let’s call it Zic-Zac-Zoe - that had a different board set up? We wouldn’t be able to use our existing player code because it’s embedded within the Tic-Tac-Toe **Board** class so we’d have to repeat all applicable player code within Zic-Zac-Zoe. If, instead, we had an independent **Player** class, we could simply create instances of that class wherever they were needed.
 
 ```
 require 'player'
 
 class Board
-    attr_reader :squares, :player1, :player2
+    attr_reader :squares, :player_1, :player_2
     
     def initialize(squares = %w[1 2 3 4 5 6 7 8 9])
         @squares = squares
-        @player1 = Player.new(1, “X”)
-        @player2 = Player.new(2, “O”)
+        @player_1 = Player.new(1, “X”)
+        @player_2 = Player.new(2, “O”)
     end
     
     def display_board
@@ -192,14 +192,6 @@ end
 The idea of single responsibility can be usefully employed in other parts of your code. Methods, like classes, should also have a single responsibility.  Let’s take a look at some of the methods from our  Tic-Tac-Toe **Board** class. 
 
 ```
-    def valid_move?(move, symbol)
-        if within_range?(move) && !square_taken?(move)
-            mark_square(move, player.symbol)
-        else
-            false
-        end
-    end
-
     def within_range?(move)
         move = move.to_i
         move > 0 && move <= 9
@@ -216,7 +208,7 @@ The idea of single responsibility can be usefully employed in other parts of you
     end
 ```
 
-All three of the above methods are taking on more than their given responsibility. Each one is converting a player's move, or input, into an integer AND fulfilling their particular job. This is unnecessarily repeating code when we could simply extract that functionality out into its own method and reuse when necessary. 
+All three of the above methods are taking on more than their given responsibility. Each one is converting a player's move, or input, into an integer *and* fulfilling their particular requirement. This is unnecessarily repeating code when we could simply extract that functionality out into its own method and reuse when necessary. 
 
 ```
     def covert_to_integer(move_string)
@@ -247,13 +239,13 @@ All three of the above methods are taking on more than their given responsibilit
 ```
 ***
 
-**Open-Closed Principle**
+**Open/Closed Principle**
 
 The Open/Closed principle states that software entities such as classes, modules, functions, etc. should be open for extension, but closed for modification. This means that any new functionality should be implemented by adding new classes, attributes, and methods instead of changing existing ones.
 
-As you can probably tell, the Open/Closed principle is highly related to the Single Responsibility principle as it maintains that classes should not take on additional functionality (read: responsibilities) that could be handled by a different class. At its root, the Open/Closed principle is saying that instead of changing code, we need to write new code, and that new code is going to work with our old code to provide the functionality that we need. 
+The Open/Closed principle is highly related to the Single Responsibility principle as it maintains that classes should not take on additional functionality (read: responsibilities) that could be handled by a different class. At its root, the Open/Closed principle is saying that instead of changing code, we need to write new code, and that new code is going to work with our old code to provide the functionality that we need. 
 
-Let’s take a look at our game of Tic-Tac-Toe. For now, we’ve only implemented functionality for a human v human game, but what if we wanted to add a Computer player? If we added the computer player to our **Player** class, we’d have to make various modifications to our **Player** class, specifically our `make_move` would have to change as a computer player would need to be programmed to choose a valid square on the board. 
+Let’s take a look at our game of Tic-Tac-Toe. For now, we’ve only implemented functionality for a human versus human game, but what if we wanted to add a computer player? If we added the computer player to our **Player** class, we’d have to make various modifications to our **Player** class.
 
 ```
 class Player
@@ -265,13 +257,11 @@ class Player
         @symbol = symbol
     end
     
-    def get_move(board)
+    def make_move
         puts "Player #{symbol}, you're up!\n"
         move = nil
         if player_type == computer
             computer_input = rand (1...9)
-            Until board.valid_move?(computer_input)
-                move = computer_input
         else
             move = gets.chomp
         end
@@ -280,4 +270,55 @@ class Player
 end
 ```
 
-The above changes to the **Player** class would qualify as a full violation of the Open/Closed principle. 
+The above changes to the **Player** class would qualify as a violation of the Open/Closed principle. We have changed the way a player is initialized and now we need to make sure that Player instances are created correctly elsewhere in our code. These changes have the potential to break our code. A better way to add a computer player would be to create a separate **Computer** class and then initialize our second player as an instance of that class.
+
+```
+class Computer
+    attr_accessor :player_num, :player_symbol
+
+    def initialize(player_num, player_symbol)
+        @player_num = player_num
+        @player_symbol = player_symbol
+    end
+
+    def computer_input
+        rand(1..9)
+    end
+
+    def make_move
+        move = computer_input
+    end
+end
+```
+
+```
+class Player
+    attr_accessor :player_num, :player_symbol
+    
+    def initialize(player_num, player_symbol)
+        @player_num = player_num
+        @player_symbol = player_symbol
+    end
+
+    def make_move
+        puts "Player #{player_symbol}, you're up!\n"
+        user_input = gets.chomp
+    end
+end
+```
+
+```
+class Board
+    attr_reader :squares, :player_1, :player_2
+    
+    def initialize(squares = %w[1 2 3 4 5 6 7 8 9])
+        @squares = squares
+        @player_1 = Player.new(1, “X”)
+        @player_2 = Computer.new(2, “O”)
+    end
+end
+```
+
+In future iterations of this code, we would likely have to validate the computer's move within the `make_move` method to make sure we were returning a valid move to the board without having to prompt the computer player continously until a valid move was generated from the `computer_input` method. To do this, we could further apply the Open/Closed principle and create a **Validator** class. This would cause some modifications to our code, but it would largely prevent future validations from causing disruptive changes outside of the **Validator** class. 
+
+> I have not implemented computer versus human in my TTT project yet, but once I do, I can add the code to this blog post to completely illustrate these changes. 
