@@ -1,19 +1,17 @@
 ---
 layout: post
-title:  "On SOLID's Liskov Substitution, Interface Segregation, and Dependency Inversion Principles"
+title:  "Writing an Echo Server that follows SOLID principles"
 date:   2022-01-19 14:57:41 -0400
 categories: blog
 ---
-
-Writing an Echo Server that follows SOLID principles
 
 **What is an Echo Server?**
 
 An Echo Server is an application that allows a client and a server to establish a connection from which the server can “echo” back messages it receives from the client. The client and server communicate via sockets. Both parties bind sockets to their end of the connection, reading from and writing to the bound socket. 
 
-Writing an Echo Server is a great way to see how the SOLID principles work in practice. 
+Writing an Echo Server is a great way to put the SOLID principles to practice. 
 
-**SOLID principles**
+**SOLID Principles**
 
 The SOLID principles are the five basic principles of object oriented programming. Their aim is to make designs easier to understand, maintain, and extend. They do this by reducing dependencies within the code. 
 
@@ -22,15 +20,6 @@ The Single Responsibility & Open/Closed principles, the first two principles in 
 **Liskov Substitution Principle**
 
 “Objects of a superclass shall be replaceable with objects of its subclasses without breaking the application.”
-
-```
-class ExampleClass {
-  void exampleMethod(SuperClass superClass) {
-    exampleHelperMethod(superClass);
-  }
-```
-
-According to the Liskov Substitution principle, any subclass object of `SuperClass` should be able to be passed into `exampleMethod` without changing or breaking the application.
 
 Let’s demonstrate this principle using the Echo Server. 
 
@@ -160,7 +149,7 @@ public interface SocketWrapper {
     void close();
 }
 ```
-In order for EchoServer to work, a server socket needs to be created (startServerSocket()). It also needs to listen for and connect to a client (connectToClient()), as well as receive input and send output (receiveData() and sendData()). Finally, it needs to close once the client stops sending messages (close()). All of those methods are needed for the echo server to run from start to finish. 
+In order for `EchoServer` to work, a server socket needs to be created (`startServerSocket()`). It also needs to listen for and connect to a client (`connectToClient()`), as well as receive input and send output (`receiveData()` and `sendData()`). Finally, it needs to close once the client stops sending messages (`close()`).
 
 But let's say we created a separate `EchoClient` class to connect to the `EchoServer` class. We'd need to use an interface to test the sockets within the `EchoClient` class. We have a `SocketWrapper` interface ready, but is it the correct the interface to use? A client wouldn't need either the `startServerSocket` or `connectToClient` methods because the client is not responsible for any of that functionality. A client does not spin up a server socket, it simply to connects to one that is available. Likewise, a client does not connect to another client, it connects to a server. If we we were to use the `SocketWrapper` interface for a client socket wrapper, we'd have to include those methods within the new client wrapper.
 
@@ -183,7 +172,6 @@ public class ClientSocketWrapper implements SocketWrapper {
     public ServerSocket startServerSocket(int port) throws IOException {
         ...
     };
-
     ...
 }
 ```
@@ -217,13 +205,12 @@ public class ServerSocketWrapper implements SocketWrapper {
     public Socket startClientSocket(InetAddress host, int port) throws IOException {
         ...
     }
-    
     ...
 }
 ```
-At this stage, we are in full violation of the Interface Segregation principle. Our interface includes methods that are not used by `ServerSocketWrapper` and `ClientSocketWrapper`. We're also in violation of the Open/Closed principle because we've had to modify the `ServerSocketWrapper` to extend the `SocketWrapper` interface.
+At this stage, we are in full violation of the Interface Segregation principle. Our interface includes methods that are not used by `ServerSocketWrapper` and `ClientSocketWrapper`. We're also in violation of the Open/Closed principle because we've had to modify the `SocketWrapper` interface.
 
-The better way to do this is to simply create a new interface for the `ClientSocketWrapper` and revert the old interface back to it's original state. 
+The better way to do this is to simply create a new interface for the `ClientSocketWrapper` and revert the old interface back to its original state. 
 
 ```
 public interface ClientWrapper {
@@ -245,6 +232,16 @@ public interface SocketWrapper {
 }
 ```
 **Dependency Inversion Principle**
+
+"High level modules should not depend on low level modules; both should depend on abstractions. Abstractions should not depend on details. Details should depend on abstractions."
+
+In following both the Open/Closed the Liskov Substitution principle, our echo server is already adhering to the Dependency Inversion principle. 
+
+Because it's using an interface, `EchoServer` has no knowledge of either `ServerSocketWrapper` or `MockServerSocketWrapper`. It is decoupled from a specific implementation of `SocketWrapper`. It simply needs a subtype of `SocketWrapper` to be created. 
+
+Conversely, as `ServerSocketWrapper` is a subtype of `SocketWrapper`, it is dependent on the interface for its implementation. It must include all of the methods listed in the interface, as well as the implementation details for all of those methods.
+
+
 
 
 
