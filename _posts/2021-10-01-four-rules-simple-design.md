@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "On Understanding the Four Rules of Simple Design"
+title:  "Understanding the Four Rules of Simple Design"
 date:   2021-10-01 15:11:41 -0400
 categories: blog
 ---

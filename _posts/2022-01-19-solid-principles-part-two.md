@@ -94,8 +94,6 @@ class EchoServerTest {
     }
 }
 ```
-To make this more clear, here are the `ServerSocketWrapper` and `MockServerSocketWrapper` classes:
-
 ```
 public class ServerSocketWrapper implements SocketWrapper {
     private BufferedReader input;
@@ -130,7 +128,7 @@ public class MockServerSocketWrapper implements SocketWrapper {
     ...
 }
 ```
-The Liskov Substitution Principle is applicable when there's a supertype-subtype inheritance relationship; the methods defined in the supertype define a contract for the subtypes. In this instance, the `SocketWrapper` interface acts as the supertype and the wrappers are the subtype. SocketWrapper can be replaced by `ServerSocketWrapper` and `MockServerSocketWrapper` because they adhere to the SocketWrapper contract. Meanwhile, `EchoServer` is blissfully unaware of the specific wrapper it receives as long as it's a subtype of `SocketWrapper`.
+The Liskov Substitution Principle is applicable when there's a supertype-subtype inheritance relationship; the methods defined in the supertype define a contract for the subtypes. In this instance, the `SocketWrapper` interface acts as the supertype and the wrappers are the subtype. SocketWrapper can be replaced by `ServerSocketWrapper` and `MockServerSocketWrapper` because they adhere to the SocketWrapper contract. Meanwhile, `EchoServer` is blissfully unaware of the specific wrapper it receives as long as it's a subtype of `SocketWrapper` (more on this later).
 
 **Interface Segregation Principle**
 
@@ -210,7 +208,7 @@ public class ServerSocketWrapper implements SocketWrapper {
 ```
 At this stage, we are in full violation of the Interface Segregation principle. Our interface includes methods that are not used by `ServerSocketWrapper` and `ClientSocketWrapper`. We're also in violation of the Open/Closed principle because we've had to modify the `SocketWrapper` interface.
 
-The better way to do this is to simply create a new interface for the `ClientSocketWrapper` and revert the old interface back to its original state. 
+The better way to do this is to simply create a new interface for the client socket wrapper and leave `SocketWrapper` as is. 
 
 ```
 public interface ClientWrapper {
@@ -239,22 +237,105 @@ In following both the Open/Closed the Liskov Substitution principle, our echo se
 
 Because it's using an interface, `EchoServer` has no knowledge of either `ServerSocketWrapper` or `MockServerSocketWrapper`. It is decoupled from a specific implementation of `SocketWrapper`. It simply needs a subtype of `SocketWrapper` to be created. 
 
-Conversely, as `ServerSocketWrapper` is a subtype of `SocketWrapper`, it is dependent on the interface for its implementation. It must include all of the methods listed in the interface, as well as the implementation details for all of those methods.
+```
+public class RunServer {
+    public static void main(String[] args) {
+        int port = 8080;
 
+        if (args.length >= 1) {
+            port = Integer.parseInt(args[0]);
+        } else {
+            Utils.print("Port not provided. Using port 8080.");
+        }
+        ServerSocketWrapper serverSocketWrapper = new ServerSocketWrapper();
+        EchoServer server = new EchoServer(serverSocketWrapper);
+        server.start(port);
+    }
+}
+```
 
+```
+public class EchoServer {
+    SocketWrapper socketWrapper;
 
+    // EchoServer only interacts with the interface
+    public EchoServer(SocketWrapper socketWrapper) {
+        this.socketWrapper = socketWrapper;
+    }
+    ...
+}
+```
+Conversely, as `ServerSocketWrapper` is a subtype of `SocketWrapper`, it is dependent on the interface for its implementation. It must include all of the methods listed in the interface, as well as the implementation details for all of those methods. 
 
+```
+public class ServerSocketWrapper implements SocketWrapper {
+    private BufferedReader input;
+    private PrintWriter output;
+    private ServerSocket serverSocket;
+    private Socket clientSocket;
 
+    public ServerSocket startServerSocket(int port) throws IOException {
+        serverSocket = new ServerSocket(port);
+        Utils.print("Listening for connection on port " + port);
+        return serverSocket;
+    }
 
+    public Socket connectToClient(ServerSocket serverSocket) {
+        try {
+            clientSocket = serverSocket.accept();
+            Utils.print("Connection successful");
+            buildIOStream();
+        } catch (IOException e) {
+            Utils.print("Connection unsuccessful");
+        }
+        return clientSocket;
+    }
 
+    
+    public void buildIOStream() throws IOException {
+        createWriter();
+        createReader();
+    }
 
+    public String receiveData() {
+        try {
+            String clientInput = input.readLine();
+            Utils.print("Client: " + clientInput);
+            return clientInput;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
+    public void sendData(String data) {
+        if (!Utils.quit(data)) {
+            output.println(data);
+        }
+    }
 
+    public void close() {
+        try {
+            input.close();
+            output.close();
+            clientSocket.close();
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void createWriter() throws IOException {
+        output = new PrintWriter(clientSocket.getOutputStream(), true);
+    }
 
+    private void createReader() throws IOException {
+        input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+    }
+}
+```
 
+***
 
-
-
-
+I hope this brief overview of the SOLID principles within the world of Echo Servers is helpful in understanding how they help us write better, less decoupled code. 
 
