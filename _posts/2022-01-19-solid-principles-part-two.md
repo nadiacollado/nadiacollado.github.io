@@ -291,7 +291,6 @@ public class ServerSocketWrapper implements SocketWrapper {
         return clientSocket;
     }
 
-    
     public void buildIOStream() throws IOException {
         createWriter();
         createReader();
@@ -336,6 +335,7 @@ public class ServerSocketWrapper implements SocketWrapper {
 ```
 
 ***
+
 
 I hope this brief overview of the SOLID principles within the world of Echo Servers is helpful in understanding how they help us write better, less decoupled code. 
 
