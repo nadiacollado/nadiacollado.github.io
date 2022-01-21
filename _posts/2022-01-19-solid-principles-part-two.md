@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Writing an Echo Server that follows SOLID principles"
+title:  "Writing an Echo Server that follows the SOLID principles"
 date:   2022-01-19 14:57:41 -0400
 categories: blog
 ---
@@ -130,6 +130,7 @@ public class MockServerSocketWrapper implements SocketWrapper {
 ```
 The Liskov Substitution Principle is applicable when there's a supertype-subtype inheritance relationship; the methods defined in the supertype define a contract for the subtypes. In this instance, the `SocketWrapper` interface acts as the supertype and the wrappers are the subtype. SocketWrapper can be replaced by `ServerSocketWrapper` and `MockServerSocketWrapper` because they adhere to the SocketWrapper contract. Meanwhile, `EchoServer` is blissfully unaware of the specific wrapper it receives as long as it's a subtype of `SocketWrapper` (more on this later).
 
+
 **Interface Segregation Principle**
 
 “Clients should not be forced to depend upon interfaces that they do not use.“
@@ -147,7 +148,7 @@ public interface SocketWrapper {
     void close();
 }
 ```
-In order for `EchoServer` to work, a server socket needs to be created (`startServerSocket()`). It also needs to listen for and connect to a client (`connectToClient()`), as well as receive input and send output (`receiveData()` and `sendData()`). Finally, it needs to close once the client stops sending messages (`close()`).
+In order for `EchoServer` to work, a server socket needs to be created (`startServerSocket`). It also needs to listen for and connect to a client (`connectToClient`), as well as receive input and send output (`receiveData` and `sendData`). Finally, it needs to close once the client stops sending messages (`close`).
 
 But let's say we created a separate `EchoClient` class to connect to the `EchoServer` class. We'd need to use an interface to test the sockets within the `EchoClient` class. We have a `SocketWrapper` interface ready, but is it the correct the interface to use? A client wouldn't need either the `startServerSocket` or `connectToClient` methods because the client is not responsible for any of that functionality. A client does not spin up a server socket, it simply to connects to one that is available. Likewise, a client does not connect to another client, it connects to a server. If we we were to use the `SocketWrapper` interface for a client socket wrapper, we'd have to include those methods within the new client wrapper.
 
@@ -206,17 +207,13 @@ public class ServerSocketWrapper implements SocketWrapper {
     ...
 }
 ```
-At this stage, we are in full violation of the Interface Segregation principle. Our interface includes methods that are not used by `ServerSocketWrapper` and `ClientSocketWrapper`. We're also in violation of the Open/Closed principle because we've had to modify the `SocketWrapper` interface.
+At this stage, we are in full violation of the Interface Segregation principle. `SocketWrapper` includes methods that are not used by `ServerSocketWrapper` and `ClientSocketWrapper`. We're also in violation of the Open/Closed principle because we've had to modify the interface.
 
 The better way to do this is to simply create a new interface for the client socket wrapper and leave `SocketWrapper` as is. 
 
 ```
 public interface ClientWrapper {
     void startClientSocket(InetAddress host, int port) throws IOException;
-    String getUserInput() throws IOException;
-    String receiveData();
-    void sendData(String data);
-    void close();
 }
 ```
 
@@ -229,6 +226,7 @@ public interface SocketWrapper {
     void close();
 }
 ```
+
 **Dependency Inversion Principle**
 
 "High level modules should not depend on low level modules; both should depend on abstractions. Abstractions should not depend on details. Details should depend on abstractions."
@@ -334,8 +332,6 @@ public class ServerSocketWrapper implements SocketWrapper {
 }
 ```
 
-***
 
-
-I hope this brief overview of the SOLID principles within the world of Echo Servers is helpful in understanding how they help us write better, less decoupled code. 
+I hope this brief overview of the SOLID principles within the world of Echo Servers is helpful in understanding how they help us write cleaner, less decoupled code. 
 
